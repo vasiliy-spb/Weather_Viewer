@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Weather App</title>
+    <!-- Added external CSS link -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<!-- Added auth-page class for specific styling -->
+<body class="auth-page">
+<div class="signup-container">
+    <div class="logo">
+        <h1>Weather Sign Up</h1>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}">
+        Registration failed
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}">
+        Registration successful
+    </div>
+
+    <form th:action="@/signup" method="post" id="signupForm">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="Create a password" required/>
+                <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+            </div>
+            <div class="password-strength">
+                <div class="password-strength-bar" id="strengthBar"></div>
+            </div>
+            <div class="password-requirements" id="requirements">
+                <div class="requirement" id="length">At least 8 characters</div>
+                <div class="requirement" id="uppercase">One uppercase letter</div>
+                <div class="requirement" id="lowercase">One lowercase letter</div>
+                <div class="requirement" id="number">One number</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="password-container">
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required/>
+                <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- Added btn-full class -->
+            <button type="submit" class="btn btn-primary btn-full" id="submitBtn">Create Account</button>
+        </div>
+    </form>
+
+    <div class="signin-link">
+        Already have an account? <a href="signin.html">Sign In</a>
+    </div>
+
+    <!-- Moved all JavaScript to external styles, keeping only page-specific logic -->
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleButton = passwordInput.nextElementSibling;
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.textContent = '🔒';
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.textContent = '👁️';
+            }
+        }
+
+        function checkPasswordStrength(password) {
+            const requirements = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password)
+            };
+
+            // Update requirement indicators
+            Object.keys(requirements).forEach(req => {
+                const element = document.getElementById(req);
+                if (requirements[req]) {
+                    element.classList.add('met');
+                } else {
+                    element.classList.remove('met');
+                }
+            });
+
+            // Calculate strength
+            const metCount = Object.values(requirements).filter(Boolean).length;
+            const strengthBar = document.getElementById('strengthBar');
+
+            strengthBar.className = 'password-strength-bar';
+            if (metCount === 1) strengthBar.classList.add('strength-weak');
+            else if (metCount === 2) strengthBar.classList.add('strength-fair');
+            else if (metCount === 3) strengthBar.classList.add('strength-good');
+            else if (metCount === 4) strengthBar.classList.add('strength-strong');
+
+            return metCount === 4;
+        }
+
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const submitBtn = document.getElementById('submitBtn');
+
+            const isPasswordStrong = checkPasswordStrength(password);
+            const passwordsMatch = password === confirmPassword;
+
+            if (isPasswordStrong && passwordsMatch && password.length > 0) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+
+        // Event listeners
+        document.getElementById('password').addEventListener('input', function() {
+            validateForm();
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            validateForm();
+        });
+
+        // Clear alerts after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+
+        // Add loading state to button on form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('loading');
+            btn.textContent = '';
+        });
+
+        // Initial validation
+        validateForm();
+    </script>
+</div>
+</body>
+</html>

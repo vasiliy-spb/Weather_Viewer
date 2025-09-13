@@ -1,13 +1,193 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-Hello, <span th:text="${user}">User</span>!
+<div class="container">
+    <!-- Header with authentication -->
+    <header class="header">
+        <div class="logo">
+            <h1>Weather App</h1>
+        </div>
+
+        <!-- For unauthenticated users -->
+        <div class="auth-section" id="unauthenticated-section">
+            <a href="signin.html" class="btn btn-secondary">Sign In</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        </div>
+
+        <!-- For authenticated users -->
+        <div class="auth-section hidden" id="authenticated-section">
+            <div class="user-info">
+                <span>Welcome, <strong id="user-email">user@example.com</strong></span>
+            </div>
+            <a href="settings.html" class="btn btn-secondary">Settings</a>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <!-- Search section -->
+        <section class="search-section">
+            <h2>Search Location</h2>
+            <form class="search-form" onsubmit="searchLocation(event)">
+                <input
+                        type="text"
+                        class="search-input"
+                        id="location-search"
+                        placeholder="Enter city name (e.g., London, New York, Moscow)"
+                        required
+                >
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </section>
+
+        <!-- Locations section -->
+        <section class="locations-section">
+            <h2>My Locations</h2>
+            <div class="locations-list" id="locations-list">
+                <!-- Sample location cards (will be populated dynamically) -->
+                <div class="location-card">
+                    <button class="remove-btn" onclick="removeLocation(1)" title="Remove location">×</button>
+                    <div class="location-name">London, UK</div>
+                    <div class="location-temp">15°C</div>
+                    <div class="location-details">
+                        <div class="detail-item">
+                            <span>💧</span>
+                            <span>Humidity: 65%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>💨</span>
+                            <span>Wind: 12 km/h</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>🌡️</span>
+                            <span>Feels like: 17°C</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>📊</span>
+                            <span>Pressure: 1013 hPa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="location-card">
+                    <button class="remove-btn" onclick="removeLocation(2)" title="Remove location">×</button>
+                    <div class="location-name">New York, USA</div>
+                    <div class="location-temp">22°C</div>
+                    <div class="location-details">
+                        <div class="detail-item">
+                            <span>💧</span>
+                            <span>Humidity: 58%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>💨</span>
+                            <span>Wind: 8 km/h</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>🌡️</span>
+                            <span>Feels like: 24°C</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>📊</span>
+                            <span>Pressure: 1018 hPa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty state (hidden by default) -->
+            <div class="empty-state hidden" id="empty-state">
+                <h3>No locations added yet</h3>
+                <p>Search for a city above to add it to your weather dashboard</p>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    // Simulate authentication state
+    let isAuthenticated = false; // Change to true to test authenticated state
+    let currentUser = 'user@example.com';
+
+    // Initialize page based on authentication state
+    function initializePage() {
+        const authenticatedSection = document.getElementById('authenticated-section');
+        const unauthenticatedSection = document.getElementById('unauthenticated-section');
+        const userEmail = document.getElementById('user-email');
+
+        if (isAuthenticated) {
+            authenticatedSection.classList.remove('hidden');
+            unauthenticatedSection.classList.add('hidden');
+            userEmail.textContent = currentUser;
+        } else {
+            authenticatedSection.classList.add('hidden');
+            unauthenticatedSection.classList.remove('hidden');
+        }
+    }
+
+    // Search location function
+    function searchLocation(event) {
+        event.preventDefault();
+        const searchInput = document.getElementById('location-search');
+        const query = searchInput.value.trim();
+
+        if (query) {
+            // In real app, this would redirect to search results page
+            window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
+        }
+    }
+
+    // Remove location function
+    function removeLocation(locationId) {
+        if (confirm('Are you sure you want to remove this location?')) {
+            // In real app, this would make an API call to remove the location
+            console.log(`Removing location with ID: ${locationId}`);
+
+            // For demo purposes, remove the card from DOM
+            event.target.closest('.location-card').remove();
+
+            // Check if no locations left
+            const locationsList = document.getElementById('locations-list');
+            const emptyState = document.getElementById('empty-state');
+
+            if (locationsList.children.length === 0) {
+                emptyState.classList.remove('hidden');
+            }
+        }
+    }
+
+    // Logout function
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            // In real app, this would make an API call to logout
+            isAuthenticated = false;
+            currentUser = '';
+            initializePage();
+
+            // Redirect to signin page
+            window.location.href = 'signin.html';
+        }
+    }
+
+    // Initialize page on load
+    document.addEventListener('DOMContentLoaded', initializePage);
+
+    // Demo: Toggle authentication state for testing
+    // Remove this in production
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'u') {
+            isAuthenticated = !isAuthenticated;
+            currentUser = isAuthenticated ? 'demo@example.com' : '';
+            initializePage();
+            console.log('Authentication state toggled:', isAuthenticated);
+        }
+    });
+</script>
 </body>
 </html>

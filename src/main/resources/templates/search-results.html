@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results - Weather App</title>
+  <!-- Added external CSS link -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">
+      <h1>Weather Search</h1>
+    </div>
+
+    <form class="search-form" th:action="@{/search}" method="get">
+      <input type="text"
+             class="search-input"
+             name="query"
+             th:value="${query}"
+             placeholder="Enter city name..."
+             required>
+      <button type="submit" class="search-btn">Search</button>
+    </form>
+  </div>
+
+  <div class="results-container">
+    <!-- Results header with dynamic content -->
+    <div class="results-header" th:if="${query}">
+      <div class="results-count" th:if="${results}" th:text="|Found ${#lists.size(results)} results|">
+        Found 5 results
+      </div>
+      <h2 class="results-title" th:text="|Search results for '${query}'|">
+        Search results for 'London'
+      </h2>
+    </div>
+
+    <!-- Loading state -->
+    <div class="loading" id="loading-state" style="display: none;">
+      <div>Searching locations...</div>
+    </div>
+
+    <!-- No results message -->
+    <div class="no-results" th:if="${query and #lists.isEmpty(results)}">
+      <div>No locations found for your search.</div>
+      <div style="margin-top: 10px; font-size: 14px;">Try searching with a different city name or check your spelling.</div>
+    </div>
+
+    <!-- Results list -->
+    <div th:if="${results and not #lists.isEmpty(results)}">
+      <div class="result-item"
+           th:each="location : ${results}"
+           th:onclick="|selectLocation('${location.name}', ${location.lat}, ${location.lon})|"
+           th:data-location="${location}">
+
+        <div class="result-name" th:text="${location.name}">
+          London
+        </div>
+
+        <div class="result-details">
+          <div class="result-detail country" th:if="${location.country}">
+            <span th:text="${location.country}">United Kingdom</span>
+          </div>
+
+          <div class="result-detail state" th:if="${location.state}">
+            <span th:text="${location.state}">England</span>
+          </div>
+
+          <div class="result-detail coordinates">
+            <span th:text="|${location.lat}, ${location.lon}|">51.5074, -0.1278</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sample results for demonstration -->
+    <div th:unless="${query}">
+      <div class="results-header">
+        <h2 class="results-title">Popular Locations</h2>
+      </div>
+
+      <div class="result-item" onclick="selectLocation('London', 51.5074, -0.1278)">
+        <div class="result-name">London</div>
+        <div class="result-details">
+          <div class="result-detail country">United Kingdom</div>
+          <div class="result-detail state">England</div>
+          <div class="result-detail coordinates">51.5074, -0.1278</div>
+        </div>
+      </div>
+
+      <div class="result-item" onclick="selectLocation('Moscow', 55.7558, 37.6176)">
+        <div class="result-name">Moscow</div>
+        <div class="result-details">
+          <div class="result-detail country">Russia</div>
+          <div class="result-detail coordinates">55.7558, 37.6176</div>
+        </div>
+      </div>
+
+      <div class="result-item" onclick="selectLocation('New York', 40.7128, -74.0060)">
+        <div class="result-name">New York</div>
+        <div class="result-details">
+          <div class="result-detail country">United States</div>
+          <div class="result-detail state">New York</div>
+          <div class="result-detail coordinates">40.7128, -74.0060</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function selectLocation(name, lat, lon) {
+      console.log(`Selected location: ${name} (${lat}, ${lon})`);
+
+      // Show loading state
+      const loadingState = document.getElementById('loading-state');
+      if (loadingState) {
+          loadingState.style.display = 'block';
+          loadingState.innerHTML = '<div>Loading weather data...</div>';
+      }
+
+      // Here you would typically redirect to weather page or make an API call
+      // For now, we'll simulate a redirect after a short delay
+      setTimeout(() => {
+          window.location.href = `/weather?lat=${lat}&lon=${lon}&name=${encodeURIComponent(name)}`;
+      }, 1000);
+  }
+
+  document.querySelector('.search-form').addEventListener('submit', function(e) {
+      const input = this.querySelector('.search-input');
+      if (!input.value.trim()) {
+          e.preventDefault();
+          input.focus();
+          return;
+      }
+
+      // Show loading state
+      const loadingState = document.getElementById('loading-state');
+      if (loadingState) {
+          loadingState.style.display = 'block';
+      }
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.querySelector('.search-input');
+      if (searchInput && !searchInput.value) {
+          searchInput.focus();
+      }
+  });
+</script>
+</body>
+</html>

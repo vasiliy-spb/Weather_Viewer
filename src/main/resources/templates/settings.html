@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Weather App</title>
+  <!-- Added external CSS link -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="settings-container">
+  <div class="main-content">
+    <a href="index.html" class="back-link">← Back to Home</a>
+
+    <div class="logo">
+      <h1>Settings</h1>
+    </div>
+
+    <div class="alert alert-success hidden" id="success-message">
+      Settings saved successfully!
+    </div>
+
+    <div class="alert alert-error hidden" id="error-message">
+      Error saving settings. Please try again.
+    </div>
+
+    <form id="settings-form" th:action="@{/settings}" method="post">
+      <!-- Language Settings -->
+      <div class="settings-section">
+        <h3>🌐 Language</h3>
+        <div class="language-options">
+          <label class="language-option active">
+            <input type="radio" name="language" value="en" checked>
+            <span>English</span>
+          </label>
+          <label class="language-option">
+            <input type="radio" name="language" value="ru">
+            <span>Русский</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Password Change -->
+      <div class="settings-section">
+        <h3>🔒 Change Password</h3>
+
+        <div class="form-group">
+          <label for="currentPassword">Current Password</label>
+          <div class="password-container">
+            <input type="password"
+                   id="currentPassword"
+                   name="currentPassword"
+                   placeholder="Enter your current password">
+            <button type="button" class="toggle-password" onclick="togglePassword('currentPassword')">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <div class="password-container">
+            <input type="password"
+                   id="newPassword"
+                   name="newPassword"
+                   placeholder="Enter your new password">
+            <button type="button" class="toggle-password" onclick="togglePassword('newPassword')">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password</label>
+          <div class="password-container">
+            <input type="password"
+                   id="confirmPassword"
+                   name="confirmPassword"
+                   placeholder="Confirm your new password">
+            <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+              👁️
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full" id="save-btn">
+        Save Settings
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Language selection
+  document.querySelectorAll('.language-option').forEach(option => {
+      option.addEventListener('click', function() {
+          document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('active'));
+          this.classList.add('active');
+          this.querySelector('input').checked = true;
+      });
+  });
+
+  // Password toggle functionality
+  function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      const button = field.nextElementSibling;
+
+      if (field.type === 'password') {
+          field.type = 'text';
+          button.textContent = '🔒';
+      } else {
+          field.type = 'password';
+          button.textContent = '👁️';
+      }
+  }
+
+  // Form submission
+  document.getElementById('settings-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const saveBtn = document.getElementById('save-btn');
+      const successMsg = document.getElementById('success-message');
+      const errorMsg = document.getElementById('error-message');
+
+      // Hide previous messages
+      successMsg.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+
+      // Validate password fields if any are filled
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (currentPassword || newPassword || confirmPassword) {
+          if (!currentPassword) {
+              errorMsg.textContent = 'Please enter your current password.';
+              errorMsg.classList.remove('hidden');
+              return;
+          }
+
+          if (!newPassword) {
+              errorMsg.textContent = 'Please enter a new password.';
+              errorMsg.classList.remove('hidden');
+              return;
+          }
+
+          if (newPassword !== confirmPassword) {
+              errorMsg.textContent = 'New passwords do not match.';
+              errorMsg.classList.remove('hidden');
+              return;
+          }
+
+          if (newPassword.length < 6) {
+              errorMsg.textContent = 'New password must be at least 6 characters long.';
+              errorMsg.classList.remove('hidden');
+              return;
+          }
+      }
+
+      // Show loading state
+      saveBtn.classList.add('loading');
+      saveBtn.disabled = true;
+
+      // Simulate API call
+      setTimeout(() => {
+          saveBtn.classList.remove('loading');
+          saveBtn.disabled = false;
+
+          // Show success message
+          successMsg.classList.remove('hidden');
+
+          // Clear password fields
+          document.getElementById('currentPassword').value = '';
+          document.getElementById('newPassword').value = '';
+          document.getElementById('confirmPassword').value = '';
+
+          // Save language preference
+          const selectedLang = document.querySelector('input[name="language"]:checked').value;
+          localStorage.setItem('weatherAppLanguage', selectedLang);
+
+          // Scroll to top to show success message
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1500);
+  });
+
+  // Initialize language from localStorage
+  document.addEventListener('DOMContentLoaded', function() {
+      const savedLang = localStorage.getItem('weatherAppLanguage') || 'en';
+      const langOption = document.querySelector(`input[value="${savedLang}"]`);
+      if (langOption) {
+          document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('active'));
+          langOption.checked = true;
+          langOption.closest('.language-option').classList.add('active');
+      }
+  });
+</script>
+</body>
+</html>

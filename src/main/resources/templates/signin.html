@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in - Weather App</title>
     <!-- Added external CSS link -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href=".styles.css">
 </head>
 <!-- Added auth-page class for specific styling -->
 <body class="auth-page">
@@ -18,7 +18,7 @@
         Wrong email or password
     </div>
 
-    <form th:action="@/signin" method="post">
+    <form th:action="@{/signin}" method="post">
         <div class="form-group">
             <label for="email">Email</label>
             <div>
@@ -39,7 +39,7 @@
     </form>
 
     <div class="signup-link">
-        Don't have an account? <a href="signup.html">Sign Up</a>
+        Don't have an account? <a href="/signup">Sign Up</a>
     </div>
 
     <script>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in - Weather App</title>
     <!-- Added external CSS link -->
-    <link rel="stylesheet" href=".styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <!-- Added auth-page class for specific styling -->
 <body class="auth-page">
@@ -15,14 +15,14 @@
     </div>
 
     <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}">
-        Wrong email or password
+        Wrong login or password
     </div>
 
     <form th:action="@{/signin}" method="post">
         <div class="form-group">
-            <label for="email">Email</label>
+            <label for="login">Login</label>
             <div>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required/>
+                <input type="text" id="login" name="login" placeholder="Enter your login" required/>
             </div>
         </div>
         <div class="form-group">

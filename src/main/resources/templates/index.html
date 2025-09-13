@@ -14,19 +14,26 @@
             <h1>Weather App</h1>
         </div>
 
-        <!-- For unauthenticated users -->
-        <div class="auth-section" id="unauthenticated-section">
-            <a href="signin.html" class="btn btn-secondary">Sign In</a>
-            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        <div th:unless="${authenticated}">
+            <!-- For unauthenticated users -->
+            <div class="auth-section" id="unauthenticated-section">
+                <a href="/signin" class="btn btn-secondary">Sign In</a>
+                <a href="/signup" class="btn btn-primary">Sign Up</a>
+            </div>
         </div>
 
         <!-- For authenticated users -->
-        <div class="auth-section hidden" id="authenticated-section">
-            <div class="user-info">
-                <span>Welcome, <strong id="user-email">user@example.com</strong></span>
+        <div th:if="${authenticated}">
+            <div class="auth-section hidden" id="authenticated-section">
+                <div class="user-info">
+                    <!--                    <span>Welcome, <strong id="user-email">user@example.com</strong></span>-->
+                    <span>Welcome, <span th:text="${username}"></span>!</span>
+                </div>
+                <a href="/logout">Logout</a>
+                <a href="/settings" class="btn btn-secondary">Settings</a>
+<!--                <button class="btn btn-danger" onclick="logout()">Logout</button>-->
+                <button class="btn btn-danger" onclick="/logout">Logout</button>
             </div>
-            <a href="settings.html" class="btn btn-secondary">Settings</a>
-            <button class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
     </header>
 
@@ -110,84 +117,84 @@
     </main>
 </div>
 
-<script>
-    // Simulate authentication state
-    let isAuthenticated = false; // Change to true to test authenticated state
-    let currentUser = 'user@example.com';
+<!--<script>-->
+<!--    // Simulate authentication state-->
+<!--    let isAuthenticated = false; // Change to true to test authenticated state-->
+<!--    let currentUser = 'user@example.com';-->
 
-    // Initialize page based on authentication state
-    function initializePage() {
-        const authenticatedSection = document.getElementById('authenticated-section');
-        const unauthenticatedSection = document.getElementById('unauthenticated-section');
-        const userEmail = document.getElementById('user-email');
+<!--    // Initialize page based on authentication state-->
+<!--    function initializePage() {-->
+<!--        const authenticatedSection = document.getElementById('authenticated-section');-->
+<!--        const unauthenticatedSection = document.getElementById('unauthenticated-section');-->
+<!--        const userEmail = document.getElementById('user-email');-->
 
-        if (isAuthenticated) {
-            authenticatedSection.classList.remove('hidden');
-            unauthenticatedSection.classList.add('hidden');
-            userEmail.textContent = currentUser;
-        } else {
-            authenticatedSection.classList.add('hidden');
-            unauthenticatedSection.classList.remove('hidden');
-        }
-    }
+<!--        if (isAuthenticated) {-->
+<!--            authenticatedSection.classList.remove('hidden');-->
+<!--            unauthenticatedSection.classList.add('hidden');-->
+<!--            userEmail.textContent = currentUser;-->
+<!--        } else {-->
+<!--            authenticatedSection.classList.add('hidden');-->
+<!--            unauthenticatedSection.classList.remove('hidden');-->
+<!--        }-->
+<!--    }-->
 
-    // Search location function
-    function searchLocation(event) {
-        event.preventDefault();
-        const searchInput = document.getElementById('location-search');
-        const query = searchInput.value.trim();
+<!--    // Search location function-->
+<!--    function searchLocation(event) {-->
+<!--        event.preventDefault();-->
+<!--        const searchInput = document.getElementById('location-search');-->
+<!--        const query = searchInput.value.trim();-->
 
-        if (query) {
-            // In real app, this would redirect to search results page
-            window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
-        }
-    }
+<!--        if (query) {-->
+<!--            // In real app, this would redirect to search results page-->
+<!--            window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;-->
+<!--        }-->
+<!--    }-->
 
-    // Remove location function
-    function removeLocation(locationId) {
-        if (confirm('Are you sure you want to remove this location?')) {
-            // In real app, this would make an API call to remove the location
-            console.log(`Removing location with ID: ${locationId}`);
+<!--    // Remove location function-->
+<!--    function removeLocation(locationId) {-->
+<!--        if (confirm('Are you sure you want to remove this location?')) {-->
+<!--            // In real app, this would make an API call to remove the location-->
+<!--            console.log(`Removing location with ID: ${locationId}`);-->
 
-            // For demo purposes, remove the card from DOM
-            event.target.closest('.location-card').remove();
+<!--            // For demo purposes, remove the card from DOM-->
+<!--            event.target.closest('.location-card').remove();-->
 
-            // Check if no locations left
-            const locationsList = document.getElementById('locations-list');
-            const emptyState = document.getElementById('empty-state');
+<!--            // Check if no locations left-->
+<!--            const locationsList = document.getElementById('locations-list');-->
+<!--            const emptyState = document.getElementById('empty-state');-->
 
-            if (locationsList.children.length === 0) {
-                emptyState.classList.remove('hidden');
-            }
-        }
-    }
+<!--            if (locationsList.children.length === 0) {-->
+<!--                emptyState.classList.remove('hidden');-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
 
-    // Logout function
-    function logout() {
-        if (confirm('Are you sure you want to logout?')) {
-            // In real app, this would make an API call to logout
-            isAuthenticated = false;
-            currentUser = '';
-            initializePage();
+<!--    // Logout function-->
+<!--    function logout() {-->
+<!--        if (confirm('Are you sure you want to logout?')) {-->
+<!--            // In real app, this would make an API call to logout-->
+<!--            isAuthenticated = false;-->
+<!--            currentUser = '';-->
+<!--            initializePage();-->
 
-            // Redirect to signin page
-            window.location.href = 'signin.html';
-        }
-    }
+<!--            // Redirect to signin page-->
+<!--            window.location.href = 'signin.html';-->
+<!--        }-->
+<!--    }-->
 
-    // Initialize page on load
-    document.addEventListener('DOMContentLoaded', initializePage);
+<!--    // Initialize page on load-->
+<!--    document.addEventListener('DOMContentLoaded', initializePage);-->
 
-    // Demo: Toggle authentication state for testing
-    // Remove this in production
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'u') {
-            isAuthenticated = !isAuthenticated;
-            currentUser = isAuthenticated ? 'demo@example.com' : '';
-            initializePage();
-            console.log('Authentication state toggled:', isAuthenticated);
-        }
-    });
-</script>
+<!--    // Demo: Toggle authentication state for testing-->
+<!--    // Remove this in production-->
+<!--    document.addEventListener('keydown', function(e) {-->
+<!--        if (e.ctrlKey && e.key === 'u') {-->
+<!--            isAuthenticated = !isAuthenticated;-->
+<!--            currentUser = isAuthenticated ? 'demo@example.com' : '';-->
+<!--            initializePage();-->
+<!--            console.log('Authentication state toggled:', isAuthenticated);-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 </body>
 </html>

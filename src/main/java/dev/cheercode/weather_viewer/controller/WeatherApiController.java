@@ -12,10 +12,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-public class WeatherController {
+public class WeatherApiController {
     private WeatherService weatherService;
 
-    public WeatherController(WeatherService weatherService) {
+    public WeatherApiController(WeatherService weatherService) {
         this.weatherService = weatherService;
     }
 

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -26,5 +27,5 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    private List<Location> locations;
+    private List<Location> locations = new ArrayList<>();
 }

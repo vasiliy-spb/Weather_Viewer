@@ -41,6 +41,8 @@ public class WeatherData {
         private BigDecimal minTemp;
         @JsonProperty("temp_max")
         private BigDecimal maxTemp;
+        private Integer humidity;
+        private Integer pressure;
 
     }
 
@@ -74,14 +76,16 @@ public class WeatherData {
     @NoArgsConstructor
     @AllArgsConstructor
     class Rain {
-        @JsonProperty("1h") private Integer millimeters; // Precipitation, mm/h. Please note that only mm/h as units of measurement are available for this parameter
+        @JsonProperty("1h") // 3h ?
+        private BigDecimal millimeters; // Precipitation, mm/h. Please note that only mm/h as units of measurement are available for this parameter
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     class Snow {
-        @JsonProperty("1h") private Integer millimeters; // Precipitation, mm/h. Please note that only mm/h as units of measurement are available for this parameter
+        @JsonProperty("1h")
+        private BigDecimal millimeters; // Precipitation, mm/h. Please note that only mm/h as units of measurement are available for this parameter
     }
 
     @Data

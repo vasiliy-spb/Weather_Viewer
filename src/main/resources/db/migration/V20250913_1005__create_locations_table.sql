@@ -2,8 +2,8 @@ CREATE TABLE locations (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     user_id INTEGER NOT NULL,
-    latitude DECIMAL(9,6) NOT NULL,
-    longitude DECIMAL(9,6) NOT NULL,
+    latitude DECIMAL(2,15) NOT NULL,
+    longitude DECIMAL(3,15) NOT NULL,
     CONSTRAINT fk_locations_user
         FOREIGN KEY (user_id)
         REFERENCES users(id)

@@ -15,6 +15,7 @@ import reactor.util.retry.Retry;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -134,7 +135,7 @@ public class WeatherService {
                 geoData.getState(),
                 geoData.getLat(),
                 geoData.getLon(),
-                geoData.getLocalNames().asMap()
+                geoData.getLocalNames() != null ? geoData.getLocalNames().asMap() : new HashMap<>()
         );
     }
 }

@@ -9,6 +9,8 @@ import dev.cheercode.weather_viewer.model.User;
 import dev.cheercode.weather_viewer.repository.SessionRepository;
 import dev.cheercode.weather_viewer.repository.UserRepository;
 import dev.cheercode.weather_viewer.service.WeatherService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,10 +32,23 @@ public class HomeController {
     @GetMapping("index")
     public String index(
             Model model,
+            HttpServletRequest request,
             @RequestParam(name = "lang", defaultValue = "en") String lang) {
-        String sessionIdAttribute = Objects.toString(model.getAttribute("sessionId"), "");
+        String sessionIdAttribute = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("sessionId".equals(cookie.getName())) {
+                    sessionIdAttribute = cookie.getValue();
+                    cookie.setMaxAge(30 * 60);
+                    break;
+                }
+            }
+        }
+
         boolean isAuthenticated = false;
-        if (!sessionIdAttribute.isEmpty()) {
+        if (sessionIdAttribute != null && !sessionIdAttribute.isEmpty()) {
             UUID sessionId = UUID.fromString(sessionIdAttribute);
             Optional<Session> sessionOptional = sessionRepository.findById(sessionId);
             if (sessionOptional.isPresent()) {
@@ -58,12 +73,26 @@ public class HomeController {
     @GetMapping("find")
     public String find(
             Model model,
+            HttpServletRequest request,
             @RequestParam String city,
             @RequestParam(name = "lang", defaultValue = "en") String lang
     ) {
-        String sessionIdAttribute = Objects.toString(model.getAttribute("sessionId"), "");
+        System.out.println("city = " + city);
+        String sessionIdAttribute = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("sessionId".equals(cookie.getName())) {
+                    sessionIdAttribute = cookie.getValue();
+                    cookie.setMaxAge(30 * 60);
+                    break;
+                }
+            }
+        }
+
         boolean isAuthenticated = false;
-        if (!sessionIdAttribute.isEmpty()) {
+        if (sessionIdAttribute != null && !sessionIdAttribute.isEmpty()) {
             UUID sessionId = UUID.fromString(sessionIdAttribute);
             Optional<Session> sessionOptional = sessionRepository.findById(sessionId);
             if (sessionOptional.isPresent()) {
@@ -95,6 +124,7 @@ public class HomeController {
     @PostMapping("add-location")
     public String addLocation(
             Model model,
+            HttpServletRequest request,
             @RequestParam String city,
             @RequestParam String country,
             @RequestParam String state,
@@ -102,9 +132,21 @@ public class HomeController {
             @RequestParam BigDecimal longitude,
             @RequestParam(name = "lang", defaultValue = "en") String lang
     ) {
-        String sessionIdAttribute = Objects.toString(model.getAttribute("sessionId"), "");
+        String sessionIdAttribute = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("sessionId".equals(cookie.getName())) {
+                    sessionIdAttribute = cookie.getValue();
+                    cookie.setMaxAge(30 * 60);
+                    break;
+                }
+            }
+        }
+
         boolean isAuthenticated = false;
-        if (!sessionIdAttribute.isEmpty()) {
+        if (sessionIdAttribute != null && !sessionIdAttribute.isEmpty()) {
             UUID sessionId = UUID.fromString(sessionIdAttribute);
             Optional<Session> sessionOptional = sessionRepository.findById(sessionId);
             if (sessionOptional.isPresent()) {
@@ -159,10 +201,23 @@ public class HomeController {
     @PostMapping("delete-location")
     public String deleteLocation(
             Model model,
+            HttpServletRequest request,
             @RequestParam String city,
             @RequestParam String country
     ) {
-        String sessionIdAttribute = Objects.toString(model.getAttribute("sessionId"), "");
+        String sessionIdAttribute = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("sessionId".equals(cookie.getName())) {
+                    sessionIdAttribute = cookie.getValue();
+                    cookie.setMaxAge(30 * 60);
+                    break;
+                }
+            }
+        }
+
         boolean isAuthenticated = false;
         if (!sessionIdAttribute.isEmpty()) {
             UUID sessionId = UUID.fromString(sessionIdAttribute);

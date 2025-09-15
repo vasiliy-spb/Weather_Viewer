@@ -3,6 +3,8 @@ package dev.cheercode.weather_viewer.controller;
 import dev.cheercode.weather_viewer.exception.AuthenticationException;
 import dev.cheercode.weather_viewer.model.Session;
 import dev.cheercode.weather_viewer.service.AuthenticationService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,13 +26,19 @@ public class AuthenticationController {
     @PostMapping("sign-up")
     public String postSignUp(
             Model model,
+            HttpServletResponse response,
             @RequestParam String login,
             @RequestParam String password,
             @RequestParam String confirmPassword
     ) {
         try {
             Session session = authenticationService.signUp(login, password, confirmPassword);
-            model.addAttribute("sessionId", session.getId());
+
+            Cookie sessionCookie = new Cookie("sessionId", session.getId().toString());
+            sessionCookie.setPath("/");
+            sessionCookie.setMaxAge(30 * 60);
+            response.addCookie(sessionCookie);
+
             return "redirect:/index";
         } catch (AuthenticationException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -46,12 +54,18 @@ public class AuthenticationController {
     @PostMapping("sign-in")
     public String postSignIn(
             Model model,
+            HttpServletResponse response,
             @RequestParam String login,
             @RequestParam String password
     ) {
         try {
             Session session = authenticationService.signIn(login, password);
-            model.addAttribute("sessionId", session.getId());
+
+            Cookie sessionCookie = new Cookie("sessionId", session.getId().toString());
+            sessionCookie.setPath("/");
+            sessionCookie.setMaxAge(30 * 60);
+            response.addCookie(sessionCookie);
+
             return "redirect:/index";
         } catch (AuthenticationException e) {
             model.addAttribute("errorMessage", e.getMessage());

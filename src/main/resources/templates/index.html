@@ -50,7 +50,7 @@
 <!-- Main Content -->
 <div class="container mt-4">
     <!-- Search Form -->
-    <form th:action="@{/}" method="get" class="row g-2 mb-4">
+    <form th:action="@{/find}" method="get" class="row g-2 mb-4">
         <div class="col-auto">
             <input type="text" name="city" class="form-control" placeholder="Enter city name"
                    th:value="${param.city != null ? param.city[0] : ''}">

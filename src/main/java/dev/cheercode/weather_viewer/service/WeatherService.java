@@ -1,6 +1,9 @@
 package dev.cheercode.weather_viewer.service;
 
+import dev.cheercode.weather_viewer.dto.LocationDto;
+import dev.cheercode.weather_viewer.dto.WeatherDto;
 import dev.cheercode.weather_viewer.exception.WeatherServiceException;
+import dev.cheercode.weather_viewer.model.Location;
 import dev.cheercode.weather_viewer.pojo.GeoData;
 import dev.cheercode.weather_viewer.pojo.WeatherData;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,11 +15,12 @@ import reactor.util.retry.Retry;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class WeatherService {
-    private WebClient webClient;
+    private final WebClient webClient;
     @Value("${weather.api.key}")
     private String apiKey;
 
@@ -24,7 +28,7 @@ public class WeatherService {
         this.webClient = webClientBuilder.baseUrl("https://api.openweathermap.org").build();
     }
 
-    public Mono<List<GeoData>> getGeoData(String city) {
+    private Mono<List<GeoData>> getGeoData(String city) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/geo/1.0/direct")
@@ -33,11 +37,14 @@ public class WeatherService {
                         .queryParam("appid", apiKey)
                         .build())
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, response -> Mono.error(new WeatherServiceException("Weather API error")))
                 .bodyToFlux(GeoData.class)
+                .timeout(Duration.ofSeconds(5))
+                .retryWhen(Retry.backoff(3, Duration.ofMillis(100)))
                 .collectList();
     }
 
-    public Mono<List<GeoData>> getGeoData(BigDecimal lat, BigDecimal lon) {
+    private Mono<List<GeoData>> getGeoData(BigDecimal lat, BigDecimal lon) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/geo/1.0/reverse")
@@ -47,11 +54,14 @@ public class WeatherService {
                         .queryParam("appid", apiKey)
                         .build())
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, response -> Mono.error(new WeatherServiceException("Weather API error")))
                 .bodyToFlux(GeoData.class)
+                .timeout(Duration.ofSeconds(5))
+                .retryWhen(Retry.backoff(3, Duration.ofMillis(100)))
                 .collectList();
     }
 
-    public Mono<WeatherData> getWeatherData(BigDecimal lat, BigDecimal lon, String lang, String units) {
+    private Mono<WeatherData> getWeatherData(BigDecimal lat, BigDecimal lon, String lang, String units) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/data/2.5/weather")
@@ -68,33 +78,64 @@ public class WeatherService {
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(100)));
     }
 
-//    public Mono<String> get(long cityId) {
-//        return client.get()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/data/2.5/forecast")
-//                        .queryParam("id", cityId)
-//                        .queryParam("appid", KEY)
-//                        .build())
-//                .retrieve()
-//                .toEntityList(String.class)
-//                .map(l -> l.getBody().get(0));
-//    }
-//
-//    public Mono<String> get(String city) {
-//        return client.get()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/data/2.5/forecast")
-//                        .queryParam("q", city)
-//                        .queryParam("appid", KEY)
-//                        .build())
-//                .retrieve()
-//                .toEntityList(String.class)
-//                .map(l -> l.getBody().get(0));
-//    }
-//
-//    public Flux<String> getForAll(List<String> cities) {
-//        return Flux.fromIterable(cities)
-//                .flatMap(this::get);
-//    }
+    public List<WeatherDto> getWeather(List<Location> locations, String lang) {
+        List<WeatherDto> weather = new ArrayList<>();
 
+        for (Location location : locations) {
+            WeatherData weatherData = getWeatherData(location.getLatitude(), location.getLongitude(), lang, getUnitsByLang(lang)).block();
+            weather.add(mapToDto(weatherData));
+        }
+
+        return weather;
+    }
+
+    private String getUnitsByLang(String lang) {
+        return switch (lang) {
+            case "ru" -> "metric";
+            case "en" -> "imperial";
+            default -> "standard";
+        };
+    }
+
+    private WeatherDto mapToDto(WeatherData weatherData) {
+        return new WeatherDto(
+                weatherData.getName(),
+                weatherData.getSys().getCountry(),
+                weatherData.getTimezone(),
+                weatherData.getMain().getTemp(),
+                weatherData.getMain().getFeelsLike(),
+                weatherData.getMain().getMinTemp(),
+                weatherData.getMain().getMaxTemp(),
+                weatherData.getMain().getHumidity(),
+                weatherData.getMain().getPressure(),
+                weatherData.getWeather().getMain(),
+                weatherData.getWeather().getDescription(),
+                weatherData.getWeather().getIcon(),
+                weatherData.getWind().getSpeed(),
+                weatherData.getWind().getDeg(),
+                weatherData.getClouds().getAll(),
+                weatherData.getRain() != null ? weatherData.getRain().getMillimeters() : BigDecimal.ZERO,
+                weatherData.getSnow() != null ? weatherData.getSnow().getMillimeters() : BigDecimal.ZERO,
+                weatherData.getSys().getSunrise(),
+                weatherData.getSys().getSunset()
+        );
+    }
+
+    public List<LocationDto> findLocations(String city) {
+        List<GeoData> geoDatas = getGeoData(city).block();
+        return geoDatas.stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    private LocationDto mapToDto(GeoData geoData) {
+        return new LocationDto(
+                geoData.getName(),
+                geoData.getCountry(),
+                geoData.getState(),
+                geoData.getLat(),
+                geoData.getLon(),
+                geoData.getLocalNames().asMap()
+        );
+    }
 }

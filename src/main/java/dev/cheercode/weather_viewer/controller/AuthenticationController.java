@@ -1,12 +1,8 @@
 package dev.cheercode.weather_viewer.controller;
 
+import dev.cheercode.weather_viewer.exception.AuthenticationException;
 import dev.cheercode.weather_viewer.model.Session;
-import dev.cheercode.weather_viewer.model.User;
-import dev.cheercode.weather_viewer.repository.SessionRepository;
-import dev.cheercode.weather_viewer.repository.UserRepository;
-import dev.cheercode.weather_viewer.service.SessionService;
-import dev.cheercode.weather_viewer.util.PasswordEncoder;
-import jakarta.servlet.http.HttpSession;
+import dev.cheercode.weather_viewer.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,103 +10,52 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 @AllArgsConstructor
 @Controller
-public class SessionController {
-    private final SessionRepository sessionRepository;
-    private final SessionService sessionService;
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+public class AuthenticationController {
+    private final AuthenticationService authenticationService;
 
-    @GetMapping("signin")
-    public String getSignIn() {
-        return "signin";
-    }
-
-    @GetMapping("signup")
+    @GetMapping("sign-up")
     public String getSignUp() {
-        return "signup";
+        return "sign-up";
     }
 
 
-    @PostMapping("signup")
+    @PostMapping("sign-up")
     public String postSignUp(
             Model model,
             @RequestParam String login,
             @RequestParam String password,
             @RequestParam String confirmPassword
     ) {
-        if (!password.equals(confirmPassword)) {
-            model.addAttribute("errorMessage", "Passwords don't match");
-            return "signup";
-        }
-
-        if (!isPasswordStrong(password)) {
-            model.addAttribute("errorMessage", "Password is not strong enough");
-            return "signup";
-        }
-
-        if (userRepository.existsByLogin(login)) {
-            model.addAttribute("errorMessage", "User with this login already exists");
-            return "signup";
-        }
-
         try {
-            String encodedPassword = passwordEncoder.encode(password);
-            Session session = sessionService.signUp(login, encodedPassword);
+            Session session = authenticationService.signUp(login, password, confirmPassword);
             model.addAttribute("sessionId", session.getId());
             return "redirect:/index";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Registration failed: " + e.getMessage());
-            return "signup";
+        } catch (AuthenticationException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "sign-up";
         }
     }
 
-    @PostMapping
-    public String signin(
+    @GetMapping("sign-in")
+    public String getSignIn() {
+        return "sign-in";
+    }
+
+    @PostMapping("sign-in")
+    public String postSignIn(
             Model model,
             @RequestParam String login,
             @RequestParam String password
     ) {
-        if (!userRepository.existsByLogin(login)) {
-            model.addAttribute("errorMessage", "Incorrect login or password");
-            return "signin";
+        try {
+            Session session = authenticationService.signIn(login, password);
+            model.addAttribute("sessionId", session.getId());
+            return "index";
+        } catch (AuthenticationException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "sign-in";
         }
-
-        User user = userRepository.findByLogin(login).get();
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            model.addAttribute("errorMessage", "Incorrect login or password");
-            return "signin";
-        }
-
-        Optional<Session> sessionOptional = sessionRepository.findByUserId(user.getId());
-        Session session;
-        if (sessionOptional.isPresent()) {
-            session = sessionOptional.get();
-            session.setExpiresAt(LocalDateTime.now().plusMinutes(30));
-            sessionRepository.save(session);
-        } else {
-            session = createSession(user);
-        }
-
-        model.addAttribute("sessionId", session.getId());
-
-        return "index";
-    }
-
-    private Session createSession(User user) {
-        Session session = new Session();
-        session.setUser(user);
-        session.setExpiresAt(LocalDateTime.now().plusMinutes(30));
-        return sessionRepository.save(session);
-    }
-
-    private boolean isPasswordStrong(String password) {
-        String pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$";
-        return password.matches(pattern);
     }
 }

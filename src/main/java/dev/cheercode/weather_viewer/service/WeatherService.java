@@ -15,7 +15,6 @@ import reactor.util.retry.Retry;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,13 +60,13 @@ public class WeatherService {
                 .collectList();
     }
 
-    private Mono<WeatherData> getWeatherData(BigDecimal lat, BigDecimal lon, String lang, String units) {
+    private Mono<WeatherData> getWeatherData(BigDecimal lat, BigDecimal lon, String lang) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/data/2.5/weather")
                         .queryParam("lat", lat)
                         .queryParam("lon", lon)
-                        .queryParam("units", units)
+                        .queryParam("units", getUnitsByLang(lang))
                         .queryParam("lang", lang)
                         .queryParam("appid", apiKey)
                         .build())
@@ -79,14 +78,14 @@ public class WeatherService {
     }
 
     public List<WeatherDto> getWeather(List<Location> locations, String lang) {
-        List<WeatherDto> weather = new ArrayList<>();
+        return locations.stream()
+                .map(location -> getWeather(location, lang))
+                .toList();
+    }
 
-        for (Location location : locations) {
-            WeatherData weatherData = getWeatherData(location.getLatitude(), location.getLongitude(), lang, getUnitsByLang(lang)).block();
-            weather.add(mapToDto(weatherData));
-        }
-
-        return weather;
+    public WeatherDto getWeather(Location location, String lang) {
+        WeatherData weatherData = getWeatherData(location.getLatitude(), location.getLongitude(), lang).block();
+        return mapToDto(weatherData);
     }
 
     private String getUnitsByLang(String lang) {

@@ -1,6 +1,8 @@
 package dev.cheercode.weather_viewer.controller;
 
 import dev.cheercode.weather_viewer.model.Session;
+import dev.cheercode.weather_viewer.model.User;
+import dev.cheercode.weather_viewer.repository.SessionRepository;
 import dev.cheercode.weather_viewer.repository.UserRepository;
 import dev.cheercode.weather_viewer.service.SessionService;
 import dev.cheercode.weather_viewer.util.PasswordEncoder;
@@ -12,9 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @AllArgsConstructor
 @Controller
 public class SessionController {
+    private final SessionRepository sessionRepository;
     private final SessionService sessionService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -32,7 +38,6 @@ public class SessionController {
 
     @PostMapping("signup")
     public String postSignUp(
-            HttpSession httpSession,
             Model model,
             @RequestParam String login,
             @RequestParam String password,
@@ -56,12 +61,52 @@ public class SessionController {
         try {
             String encodedPassword = passwordEncoder.encode(password);
             Session session = sessionService.signUp(login, encodedPassword);
-            httpSession.setAttribute("sessionId", session.getId());
+            model.addAttribute("sessionId", session.getId());
             return "redirect:/index";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Registration failed: " + e.getMessage());
             return "signup";
         }
+    }
+
+    @PostMapping
+    public String signin(
+            Model model,
+            @RequestParam String login,
+            @RequestParam String password
+    ) {
+        if (!userRepository.existsByLogin(login)) {
+            model.addAttribute("errorMessage", "Incorrect login or password");
+            return "signin";
+        }
+
+        User user = userRepository.findByLogin(login).get();
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            model.addAttribute("errorMessage", "Incorrect login or password");
+            return "signin";
+        }
+
+        Optional<Session> sessionOptional = sessionRepository.findByUserId(user.getId());
+        Session session;
+        if (sessionOptional.isPresent()) {
+            session = sessionOptional.get();
+            session.setExpiresAt(LocalDateTime.now().plusMinutes(30));
+            sessionRepository.save(session);
+        } else {
+            session = createSession(user);
+        }
+
+        model.addAttribute("sessionId", session.getId());
+
+        return "index";
+    }
+
+    private Session createSession(User user) {
+        Session session = new Session();
+        session.setUser(user);
+        session.setExpiresAt(LocalDateTime.now().plusMinutes(30));
+        return sessionRepository.save(session);
     }
 
     private boolean isPasswordStrong(String password) {

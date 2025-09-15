@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -22,8 +24,15 @@ public class GeoData {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class LocalNames {
+    public static class LocalNames {
         private String en;
         private String ru;
+
+        public Map<String, String> asMap() {
+            return Map.of(
+                    "en", Objects.toString(en, ""),
+                    "ru", Objects.toString(ru, "")
+            );
+        }
     }
 }

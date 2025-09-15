@@ -15,6 +15,7 @@ public class WeatherData {
     private String name; // City name (deprecated request)
     private Coordinates coord;
     private Main main;
+    private Weather weather;
     private Wind wind;
     private Clouds clouds;
     private Rain rain;
@@ -25,7 +26,7 @@ public class WeatherData {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class Coordinates {
+    public static class Coordinates {
         private BigDecimal lat;
         private BigDecimal lon;
     }
@@ -33,7 +34,7 @@ public class WeatherData {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class Main {
+    public static class Main {
         private BigDecimal temp;
         @JsonProperty("feels_like")
         private BigDecimal feelsLike;
@@ -49,7 +50,7 @@ public class WeatherData {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class Weather {
+    public static class Weather {
         private Integer id;
         private String main;
         private String description;
@@ -59,7 +60,7 @@ public class WeatherData {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class Wind {
+    public static class Wind {
         private BigDecimal speed;
         private Integer deg; // Wind direction, degrees (meteorological)
         private String gust;
@@ -68,14 +69,14 @@ public class WeatherData {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class Clouds {
+    public static class Clouds {
         private Integer all; // Cloudiness, %
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class Rain {
+    public static class Rain {
         @JsonProperty("1h") // 3h ?
         private BigDecimal millimeters; // Precipitation, mm/h. Please note that only mm/h as units of measurement are available for this parameter
     }
@@ -83,7 +84,7 @@ public class WeatherData {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class Snow {
+    public static class Snow {
         @JsonProperty("1h")
         private BigDecimal millimeters; // Precipitation, mm/h. Please note that only mm/h as units of measurement are available for this parameter
     }
@@ -91,7 +92,8 @@ public class WeatherData {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    class Sys {
+    public static class Sys {
+        private String country;
         private Long sunrise;
         private Long sunset;
     }

@@ -52,7 +52,7 @@ public class AuthenticationController {
         try {
             Session session = authenticationService.signIn(login, password);
             model.addAttribute("sessionId", session.getId());
-            return "index";
+            return "redirect:/index";
         } catch (AuthenticationException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "sign-in";

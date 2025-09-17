@@ -15,7 +15,7 @@ public class WeatherData {
     private String name; // City name (deprecated request)
     private Coordinates coord;
     private Main main;
-    private Weather weather;
+    private Weather[] weather;
     private Wind wind;
     private Clouds clouds;
     private Rain rain;

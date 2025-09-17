@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
@@ -71,6 +72,10 @@ public class AuthenticationService {
         }
 
         return session;
+    }
+
+    public void logout(UUID sessionId) {
+        sessionRepository.deleteById(sessionId);
     }
 
     private boolean isPasswordStrong(String password) {

@@ -11,7 +11,5 @@ import java.util.List;
 public interface LocationRepository extends JpaRepository<Location, Long> {
     List<Location> findByUser(User user);
 
-    Location save(Location location);
-
     void deleteByIdAndUser(Long id, User user);
 }

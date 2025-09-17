@@ -9,11 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface SessionRepository extends JpaRepository<Session, UUID> {
-    Session save(Session session);
-
-    Optional<Session> findById(UUID id);
-
     Optional<Session> findByUserId(Long userId);
-
-    void deleteById(UUID id);
 }

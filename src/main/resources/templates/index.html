@@ -167,15 +167,15 @@
 
                                 <!-- Время восхода и заката -->
                                 <p class="card-text" th:if="${weather.sunrise != null}">
-                                    <span th:text="'Sunrise: ' + ${#temporals.format(#temporals.createDate(weather.sunrise * 1000), 'HH:mm')}"></span>
+                                    <span th:text="'Sunrise: ' + ${weather.sunrise}"></span>
                                 </p>
                                 <p class="card-text" th:if="${weather.sunset != null}">
-                                    <span th:text="'Sunset: ' + ${#temporals.format(#temporals.createDate(weather.sunset * 1000), 'HH:mm')}"></span>
+                                    <span th:text="'Sunset: ' + ${weather.sunset}"></span>
                                 </p>
 
                                 <!-- Таймзона -->
                                 <p class="card-text" th:if="${weather.timezone != null}"
-                                   th:text="'Timezone: UTC' + (${weather.timezone} >= 0 ? '+' : '') + ${weather.timezone / 3600}">Timezone</p>
+                                   th:text="'Timezone: UTC' + (${weather.timezone} >= 0 ? '+' : '') + ${weather.timezone}">Timezone</p>
                             </div>
                         </div>
                     </div>

@@ -77,7 +77,6 @@ public class HomeController {
             @RequestParam String city,
             @RequestParam(name = "lang", defaultValue = "en") String lang
     ) {
-        System.out.println("city = " + city);
         String sessionIdAttribute = null;
 
         Cookie[] cookies = request.getCookies();

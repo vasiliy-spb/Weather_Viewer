@@ -34,16 +34,20 @@ public class AuthenticationController {
         try {
             Session session = authenticationService.signUp(login, password, confirmPassword);
 
-            Cookie sessionCookie = new Cookie("sessionId", session.getId().toString());
-            sessionCookie.setPath("/");
-            sessionCookie.setMaxAge(30 * 60);
-            response.addCookie(sessionCookie);
+            addSessionCookie(response, session);
 
             return "redirect:/index";
         } catch (AuthenticationException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "sign-up";
         }
+    }
+
+    private void addSessionCookie(HttpServletResponse response, Session session) {
+        Cookie sessionCookie = new Cookie("sessionId", session.getId().toString());
+        sessionCookie.setPath("/");
+        sessionCookie.setMaxAge(30 * 60);
+        response.addCookie(sessionCookie);
     }
 
     @GetMapping("sign-in")
@@ -61,10 +65,7 @@ public class AuthenticationController {
         try {
             Session session = authenticationService.signIn(login, password);
 
-            Cookie sessionCookie = new Cookie("sessionId", session.getId().toString());
-            sessionCookie.setPath("/");
-            sessionCookie.setMaxAge(30 * 60);
-            response.addCookie(sessionCookie);
+            addSessionCookie(response, session);
 
             return "redirect:/index";
         } catch (AuthenticationException e) {

@@ -15,6 +15,7 @@ import reactor.util.retry.Retry;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -98,26 +99,27 @@ public class WeatherService {
     }
 
     private WeatherDto mapToDto(WeatherData weatherData) {
+        final long SECONDS_PER_HOUR = 3600;
         return new WeatherDto(
                 weatherData.getName(),
                 weatherData.getSys().getCountry(),
-                weatherData.getTimezone(),
+                weatherData.getTimezone() / SECONDS_PER_HOUR,
                 weatherData.getMain().getTemp(),
                 weatherData.getMain().getFeelsLike(),
                 weatherData.getMain().getMinTemp(),
                 weatherData.getMain().getMaxTemp(),
                 weatherData.getMain().getHumidity(),
                 weatherData.getMain().getPressure(),
-                weatherData.getWeather().getMain(),
-                weatherData.getWeather().getDescription(),
-                weatherData.getWeather().getIcon(),
+                weatherData.getWeather()[0].getMain(),
+                weatherData.getWeather()[0].getDescription(),
+                weatherData.getWeather()[0].getIcon(),
                 weatherData.getWind().getSpeed(),
                 weatherData.getWind().getDeg(),
                 weatherData.getClouds().getAll(),
                 weatherData.getRain() != null ? weatherData.getRain().getMillimeters() : BigDecimal.ZERO,
                 weatherData.getSnow() != null ? weatherData.getSnow().getMillimeters() : BigDecimal.ZERO,
-                weatherData.getSys().getSunrise(),
-                weatherData.getSys().getSunset()
+                getSecondsSinceMidnight(weatherData.getSys().getSunrise(), weatherData.getTimezone()),
+                getSecondsSinceMidnight(weatherData.getSys().getSunset(), weatherData.getTimezone())
         );
     }
 
@@ -126,6 +128,13 @@ public class WeatherService {
         return geoDatas.stream()
                 .map(this::mapToDto)
                 .toList();
+    }
+
+    private LocalTime getSecondsSinceMidnight(long time, long timezone) {
+        final long SECONDS_PER_DAY = 86400;
+        long localTime = time + timezone;
+        long seconds = Math.floorMod(localTime, SECONDS_PER_DAY);
+        return LocalTime.ofSecondOfDay(seconds);
     }
 
     private LocationDto mapToDto(GeoData geoData) {

@@ -5,6 +5,6 @@ CREATE TABLE users (
 );
 
 COMMENT ON TABLE users IS 'Таблица пользователей системы';
-COMMENT ON COLUMN users.id IS 'Айди пользователя, автоинкремент, первичный ключ';
+COMMENT ON COLUMN users.id IS 'Идентификатор пользователя, автоинкремент, первичный ключ';
 COMMENT ON COLUMN users.login IS 'Логин пользователя, username или email';
 COMMENT ON COLUMN users.password IS 'Зашифрованный пароль (BCrypt)';

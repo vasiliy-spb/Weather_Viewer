@@ -12,26 +12,9 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            /* Основные цвета пшеничного поля */
-            --wheat-light: #f5f0e6;
-            --wheat-medium: #e2d3ac;
-            --wheat-dark: #b8a992;
-
-            /* Акцентные теплые цвета */
-            --accent-color: #e07e4a;
-            --accent-hover: #c86a3d;
-            --gold-light: #ffd59a;
-
-            /* Переменные для компонентов */
-            --primary-gradient: linear-gradient(135deg, var(--wheat-medium) 10%, var(--gold-light) 100%);
-            --card-bg: rgba(245, 240, 230, 0.25);
-            --card-shadow: 0 8px 32px rgba(184, 169, 146, 0.15);
-            --text-main: #5d4a2a;
-
-            /* Обновленные переменные для header */
-            --navbar-bg: rgba(93, 74, 62, 0.92);
-            --navbar-text: #f5f0e6;
-            --navbar-accent: #e07e4a;
+            --primary-gradient: linear-gradient(135deg, #72edf2 10%, #5151e5 100%);
+            --card-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --glass-effect: rgba(255, 255, 255, 0.25);
         }
 
         body {
@@ -41,11 +24,10 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             align-items: center;
-            color: var(--text-main);
         }
 
         .glass-card {
-            background: var(--card-bg);
+            background: var(--glass-effect);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 16px;
@@ -53,67 +35,35 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-<!--        .navbar {-->
-<!--            background: var(&#45;&#45;navbar-bg) !important;-->
-<!--            backdrop-filter: blur(20px);-->
-<!--            border-bottom: 2px solid rgba(224, 126, 74, 0.2);-->
-<!--            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);-->
-<!--            padding: 0.8rem 0;-->
-<!--        }-->
-
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--navbar-bg) !important;
-        }
-
-        .navbar-brand i {
-            color: var(--navbar-accent) !important;
-            margin-right: 0.5rem;
+            font-size: 1.5rem;
         }
 
         .form-control {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(93, 74, 62, 0.3);
-            color: var(--text-main);
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
         }
 
         .form-control:focus {
-            background: rgba(255, 255, 255, 0.95);
-            border-color: var(--accent-color);
-            color: var(--text-main);
-            box-shadow: 0 0 0 0.25rem rgba(224, 126, 74, 0.25);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
         }
 
         .form-control::placeholder {
-            color: rgba(93, 74, 62, 0.6);
+            color: rgba(255, 255, 255, 0.7);
         }
 
-        .form-label {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .btn-signup {
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+        .btn-primary {
+            background: var(--primary-gradient);
             border: none;
-            color: white;
-            padding: 0.75rem 2rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(224, 126, 74, 0.3);
-            width: 100%;
-        }
-
-        .btn-signup:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(224, 126, 74, 0.4);
-            color: white;
         }
 
         .auth-container {
-            max-width: 500px;
+            max-width: 450px;
             width: 100%;
         }
 
@@ -127,74 +77,36 @@
             content: "";
             flex: 1;
             height: 1px;
-            background: rgba(93, 74, 62, 0.3);
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .divider span {
             padding: 0 15px;
-            color: var(--text-main);
-            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .alert-custom {
-            background: rgba(231, 76, 60, 0.9);
+            background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
-            border: none;
-            color: white;
-            border-radius: 8px;
-        }
-
-        h2 {
-            color: var(--text-main);
-            font-weight: 700;
-        }
-
-        a {
-            color: var(--accent-color);
-            font-weight: 500;
-            text-decoration: none;
-        }
-
-        a:hover {
-            color: var(--accent-hover);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
         }
 
         .password-requirements {
-            background: rgba(245, 240, 230, 0.5);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 20px;
-            color: var(--text-main);
-            border-left: 4px solid var(--accent-color);
         }
 
         .password-requirements ul {
             margin-bottom: 0;
             padding-left: 20px;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .requirement {
             font-size: 0.9rem;
-        }
-
-        .back-link {
-            color: var(--text-main);
-            transition: all 0.3s ease;
-        }
-
-        .back-link:hover {
-            color: var(--accent-color);
-        }
-
-        /* Улучшенная типографика */
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        /* Иконки */
-        .bi {
-            color: var(--accent-color);
         }
     </style>
 </head>
@@ -203,7 +115,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10 col-lg-8">
             <!-- Navigation -->
-            <nav class="navbar navbar-expand-lg navbar-dark mb-5">
+            <nav class="navbar navbar-dark mb-5">
                 <div class="container-fluid justify-content-center">
                     <a class="navbar-brand" href="/index">
                         <i class="bi bi-cloud-sun"></i> Weather Viewer
@@ -214,7 +126,7 @@
             <!-- Sign Up Form -->
             <div class="auth-container mx-auto">
                 <div class="glass-card p-4">
-                    <h2 class="text-center mb-4">Create Account</h2>
+                    <h2 class="text-center text-white mb-4">Create Account</h2>
 
                     <!-- Error Message -->
                     <div th:if="${errorMessage}" class="alert alert-custom alert-dismissible fade show" role="alert">
@@ -224,7 +136,7 @@
 
                     <!-- Password Requirements -->
                     <div class="password-requirements">
-                        <p class="mb-2 fw-bold">Password must meet the following requirements:</p>
+                        <p class="text-white mb-2">Password must meet the following requirements:</p>
                         <ul class="requirement">
                             <li>At least 8 characters long</li>
                             <li>Contains at least one digit (0-9)</li>
@@ -235,35 +147,36 @@
 
                     <form th:action="@{/sign-up}" method="post">
                         <div class="mb-3">
-                            <label for="login" class="form-label">Login</label>
+                            <label for="login" class="form-label text-white">Login</label>
                             <input type="text" class="form-control" id="login" name="login" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label text-white">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
 
                         <div class="mb-4">
-                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <label for="confirmPassword" class="form-label text-white">Confirm Password</label>
                             <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                                    required>
                         </div>
 
-                        <button type="submit" class="btn btn-signup mb-3">Create Account</button>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Create Account</button>
 
                         <div class="divider">
                             <span>OR</span>
                         </div>
 
                         <div class="text-center mt-3">
-                            <p>Already have an account? <a th:href="@{/sign-in}" class="fw-bold">Sign In</a></p>
+                            <p class="text-white">Already have an account? <a th:href="@{/sign-in}"
+                                                                              class="text-white fw-bold">Sign In</a></p>
                         </div>
                     </form>
                 </div>
 
                 <div class="text-center mt-4">
-                    <a th:href="@{/index}" class="back-link">
+                    <a th:href="@{/index}" class="text-white">
                         <i class="bi bi-arrow-left"></i> Back to Home
                     </a>
                 </div>

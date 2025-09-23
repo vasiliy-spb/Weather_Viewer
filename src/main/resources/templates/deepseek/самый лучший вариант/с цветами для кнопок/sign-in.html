@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+<!--    изменено-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - Weather Viewer</title>
@@ -12,26 +13,12 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            /* Основные цвета пшеничного поля */
-            --wheat-light: #f5f0e6;
-            --wheat-medium: #e2d3ac;
-            --wheat-dark: #b8a992;
-
-            /* Акцентные теплые цвета */
-            --accent-color: #e07e4a;
-            --accent-hover: #c86a3d;
-            --gold-light: #ffd59a;
-
-            /* Переменные для компонентов */
-            --primary-gradient: linear-gradient(135deg, var(--wheat-medium) 10%, var(--gold-light) 100%);
-            --card-bg: rgba(245, 240, 230, 0.25);
-            --card-shadow: 0 8px 32px rgba(184, 169, 146, 0.15);
-            --text-main: #5d4a2a;
-
-            /* Обновленные переменные для header */
-            --navbar-bg: rgba(93, 74, 62, 0.92);
-            --navbar-text: #f5f0e6;
-            --navbar-accent: #e07e4a;
+            --primary-gradient: linear-gradient(135deg, #72edf2 10%, #5151e5 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 10%, #3498db 100%);
+            --card-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --glass-effect: rgba(255, 255, 255, 0.25);
+            --text-dark: #2c3e50;
+            --text-light: #ecf0f1;
         }
 
         body {
@@ -41,75 +28,57 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             align-items: center;
-            color: var(--text-main);
         }
 
         .glass-card {
-            background: var(--card-bg);
+            background: var(--glass-effect);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 16px;
             box-shadow: var(--card-shadow);
             border: 1px solid rgba(255, 255, 255, 0.18);
-        }
-
-        .navbar {
-<!--            background: var(&#45;&#45;navbar-bg) !important;-->
-<!--            backdrop-filter: blur(20px);-->
-<!--            border-bottom: 2px solid rgba(224, 126, 74, 0.2);-->
-<!--            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);-->
-<!--            padding: 0.8rem 0;-->
+            color: var(--text-dark);
         }
 
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--navbar-bg) !important;
-        }
-
-        .navbar-brand i {
-            color: var(--navbar-accent) !important;
-            margin-right: 0.5rem;
+            font-size: 1.5rem;
+            color: var(--text-light) !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .form-control {
             background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(93, 74, 62, 0.3);
-            color: var(--text-main);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(44, 62, 80, 0.3);
+            color: var(--text-dark);
         }
 
         .form-control:focus {
             background: rgba(255, 255, 255, 0.95);
-            border-color: var(--accent-color);
-            color: var(--text-main);
-            box-shadow: 0 0 0 0.25rem rgba(224, 126, 74, 0.25);
+            border-color: var(--text-dark);
+            color: var(--text-dark);
+            box-shadow: 0 0 0 0.25rem rgba(44, 62, 80, 0.25);
         }
 
         .form-control::placeholder {
-            color: rgba(93, 74, 62, 0.6);
+            color: rgba(44, 62, 80, 0.6);
         }
 
         .form-label {
-            color: var(--text-main);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--dark-gradient);
+            border: none;
             font-weight: 600;
         }
 
-        .btn-signin {
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-            border: none;
-            color: white;
-            padding: 0.75rem 2rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(224, 126, 74, 0.3);
-            width: 100%;
-        }
-
-        .btn-signin:hover {
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3498db 10%, #2c3e50 100%);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(224, 126, 74, 0.4);
-            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .auth-container {
@@ -127,12 +96,12 @@
             content: "";
             flex: 1;
             height: 1px;
-            background: rgba(93, 74, 62, 0.3);
+            background: rgba(44, 62, 80, 0.3);
         }
 
         .divider span {
             padding: 0 15px;
-            color: var(--text-main);
+            color: var(--text-dark);
             font-weight: 500;
         }
 
@@ -145,38 +114,48 @@
         }
 
         h2 {
-            color: var(--text-main);
+            color: var(--text-dark);
             font-weight: 700;
         }
 
         a {
-            color: var(--accent-color);
+            color: #2980b9;
             font-weight: 500;
-            text-decoration: none;
         }
 
         a:hover {
-            color: var(--accent-hover);
+            color: #2c3e50;
+        }
+
+        .text-white {
+            color: var(--text-dark) !important;
+        }
+
+        .password-requirements {
+            background: rgba(236, 240, 241, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .password-requirements ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+            color: var(--text-dark);
+        }
+
+        .requirement {
+            font-size: 0.9rem;
         }
 
         .back-link {
-            color: var(--text-main);
-            transition: all 0.3s ease;
+            color: var(--text-light);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         .back-link:hover {
-            color: var(--accent-color);
-        }
-
-        /* Улучшенная типографика */
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        /* Иконки */
-        .bi {
-            color: var(--accent-color);
+            color: white;
         }
     </style>
 </head>
@@ -185,7 +164,8 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <!-- Navigation -->
-            <nav class="navbar navbar-expand-lg navbar-dark mb-5">
+<!--            <nav class="navbar navbar-dark mb-5">-->
+            <nav class="navbar navbar-light mb-5">
                 <div class="container-fluid justify-content-center">
                     <a class="navbar-brand" href="/index">
                         <i class="bi bi-cloud-sun"></i> Weather Viewer
@@ -196,7 +176,7 @@
             <!-- Sign In Form -->
             <div class="auth-container mx-auto">
                 <div class="glass-card p-4">
-                    <h2 class="text-center mb-4">Sign In</h2>
+                    <h2 class="text-center text-white mb-4">Sign In</h2>
 
                     <!-- Error Message -->
                     <div th:if="${errorMessage}" class="alert alert-custom alert-dismissible fade show" role="alert">
@@ -206,29 +186,32 @@
 
                     <form th:action="@{/sign-in}" method="post">
                         <div class="mb-3">
-                            <label for="login" class="form-label">Login</label>
+                            <label for="login" class="form-label text-white">Login</label>
                             <input type="text" class="form-control" id="login" name="login" required>
                         </div>
 
                         <div class="mb-4">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label text-white">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
 
-                        <button type="submit" class="btn btn-signin mb-3">Sign In</button>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Sign In</button>
 
                         <div class="divider">
                             <span>OR</span>
                         </div>
 
                         <div class="text-center mt-3">
+<!--                            <p class="text-white">Don't have an account? <a th:href="@{/sign-up}"-->
+<!--                                                                            class="text-white fw-bold">Sign Up</a></p>-->
                             <p>Don't have an account? <a th:href="@{/sign-up}" class="fw-bold">Sign Up</a></p>
                         </div>
                     </form>
                 </div>
 
                 <div class="text-center mt-4">
-                    <a th:href="@{/index}" class="back-link">
+<!--                    <a th:href="@{/index}" class="text-white">-->
+                        <a th:href="@{/index}" class="back-link">
                         <i class="bi bi-arrow-left"></i> Back to Home
                     </a>
                 </div>

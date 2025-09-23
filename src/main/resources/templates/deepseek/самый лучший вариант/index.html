@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{navbar.title}">Weather Viewer</title>
+    <title>Weather Viewer</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,26 +12,11 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            /* Основные цвета пшеничного поля */
-            --wheat-light: #f5f0e6;
-            --wheat-medium: #e2d3ac;
-            --wheat-dark: #b8a992;
-
-            /* Акцентные теплые цвета */
-            --accent-color: #e07e4a;
-            --accent-hover: #c86a3d;
-            --gold-light: #ffd59a;
-
-            /* Переменные для компонентов */
-            --primary-gradient: linear-gradient(135deg, var(--wheat-medium) 10%, var(--gold-light) 100%);
-            --card-bg: rgba(245, 240, 230, 0.25);
-            --card-shadow: 0 8px 32px rgba(184, 169, 146, 0.15);
-            --text-main: #5d4a2a;
-
-            /* Обновленные переменные для header */
-            --navbar-bg: rgba(93, 74, 62, 0.92);
-            --navbar-text: #f5f0e6;
-            --navbar-accent: #e07e4a;
+            --primary-gradient: linear-gradient(135deg, #72edf2 10%, #5151e5 100%);
+            --card-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --glass-effect: rgba(255, 255, 255, 0.25);
+            --primary-color: #5151e5;
+            --primary-hover: #4141c5;
         }
 
         body {
@@ -39,11 +24,10 @@
             background-size: cover;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text-main);
         }
 
         .glass-card {
-            background: var(--card-bg);
+            background: var(--glass-effect);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 16px;
@@ -57,64 +41,12 @@
         }
 
         .weather-card:hover {
-            box-shadow: 0 12px 40px rgba(184, 169, 146, 0.25);
-        }
-
-        .navbar {
-            background: var(--navbar-bg) !important;
-            backdrop-filter: blur(20px);
-            border-bottom: 2px solid rgba(224, 126, 74, 0.2);
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
-            padding: 0.8rem 0;
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
         }
 
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--navbar-text) !important;
-        }
-
-        .navbar-brand i {
-            color: var(--navbar-accent) !important;
-            margin-right: 0.5rem;
-        }
-
-        .navbar-text {
-            color: var(--wheat-medium) !important;
-        }
-
-        /* Кнопки в навигации */
-        .navbar .btn-outline-light {
-            border-color: rgba(255, 255, 255, 0.3);
-            color: var(--navbar-text);
-            transition: all 0.3s ease;
-        }
-
-        .navbar .btn-outline-light:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--navbar-accent);
-            color: var(--navbar-accent);
-        }
-
-        .navbar .btn-light {
-            background: var(--navbar-accent);
-            border-color: var(--navbar-accent);
-            color: white;
-        }
-
-        .navbar .btn-light:hover {
-            background: var(--accent-hover);
-            border-color: var(--accent-hover);
-        }
-
-        /* Языковой переключатель */
-        .navbar .btn-group .btn {
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .navbar .btn-group .btn.active {
-            background: var(--navbar-accent);
-            border-color: var(--navbar-accent);
+            font-size: 1.5rem;
         }
 
         .temperature-display {
@@ -141,14 +73,14 @@
         }
 
         .sun-times {
-            background: rgba(255, 235, 215, 0.4);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             padding: 10px;
         }
 
         .sun-track {
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-            background: linear-gradient(90deg, #2c3e50, #4a6572, #2c3e50) !important;
+            background: linear-gradient(90deg, #1a2530, #2c3e50, #1a2530) !important;
             position: relative;
             height: 24px;
             border-radius: 12px;
@@ -231,18 +163,19 @@
         /* Дополнительная анимация для солнца - пульсация */
         .bi-brightness-high-fill {
             animation: rotate 4s ease-in-out infinite;
-            color: #ffa726 !important;
-            text-shadow: 0 0 13px #ffb74d !important;
+            color: #fc8f00 !important;
+            font-size: 1.4rem !important;
+            text-shadow: 0 0 13px orange !important;
         }
 
         @keyframes sun-glow {
             0%, 100% {
                 opacity: 1;
-                filter: drop-shadow(0 0 10px #ffa726);
+                filter: drop-shadow(0 0 10px orange);
             }
             50% {
                 opacity: 0.9;
-                filter: drop-shadow(0 0 20px #ffa726) brightness(1.2);
+                filter: drop-shadow(0 0 20px orange) brightness(1.2);
             }
         }
 
@@ -250,6 +183,7 @@
         .bi-moon-fill {
             animation: moon-glow 4s ease-in-out infinite !important;
             color: #ecf0f1 !important;
+            font-size: 1.2rem !important;
             text-shadow: 0 0 10px #3498db !important;
         }
 
@@ -306,38 +240,22 @@
             margin-top: 4px;
         }
 
-        /* Стили для кнопок в основном контенте */
-        .btn-signup {
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+        /* Новый стиль для кнопки добавления локации */
+        .btn-add-location {
+            background: var(--primary-gradient);
             border: none;
             color: white;
-            padding: 0.75rem 2rem;
-            font-weight: 500;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(224, 126, 74, 0.3);
+            box-shadow: 0 4px 15px rgba(81, 81, 229, 0.3);
         }
 
-        .btn-signup:hover {
+        .btn-add-location:hover {
+            background: linear-gradient(135deg, #62dde2 10%, #4141c5 100%);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(224, 126, 74, 0.4);
+            box-shadow: 0 6px 20px rgba(81, 81, 229, 0.4);
             color: white;
         }
 
-        .btn-signin {
-            background: transparent;
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 0.75rem 2rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-signin:hover {
-            background: var(--accent-color);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(224, 126, 74, 0.3);
-        }
 
         .search-result-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -348,7 +266,7 @@
 
         .search-result-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(184, 169, 146, 0.25) !important;
+            box-shadow: 0 8px 25px rgba(31, 38, 135, 0.25) !important;
         }
 
         .search-result-card form button {
@@ -358,30 +276,6 @@
         .search-result-card form button:hover {
             background-color: rgba(255, 255, 255, 0.1);
         }
-
-        /* Кнопка поиска */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-            border: none;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(224, 126, 74, 0.4);
-        }
-
-        /* Улучшенная типографика */
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        /* Иконки */
-        .bi {
-            color: var(--accent-color);
-        }
     </style>
 </head>
 <body>
@@ -389,7 +283,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75 mb-4">
     <div class="container">
         <a class="navbar-brand" href="/index">
-            <i class="bi bi-cloud-sun"></i> <span th:text="#{navbar.title}">Weather Viewer</span>
+            <i class="bi bi-cloud-sun"></i> Weather Viewer
         </a>
 
         <div class="d-flex align-items-center">
@@ -407,14 +301,14 @@
 
             <!-- Authentication Section -->
             <div th:if="${isAuthenticated}">
-                <span class="navbar-text me-3" th:text="#{navbar.hello} + ' '">Hello, <span th:text="${userLogin}"></span></span>
+                <span class="navbar-text me-3">Hello, <span th:text="${userLogin}"></span></span>
                 <form th:action="@{/logout}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-outline-light btn-sm" th:text="#{navbar.logout}">Logout</button>
+                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
                 </form>
             </div>
             <div th:unless="${isAuthenticated}">
-                <a th:href="@{/sign-in}" class="btn btn-outline-light btn-sm me-2" th:text="#{navbar.signin}">Sign In</a>
-                <a th:href="@{/sign-up}" class="btn btn-light btn-sm" th:text="#{navbar.signup}">Sign Up</a>
+                <a th:href="@{/sign-in}" class="btn btn-outline-light btn-sm me-2">Sign In</a>
+                <a th:href="@{/sign-up}" class="btn btn-light btn-sm">Sign Up</a>
             </div>
         </div>
     </div>
@@ -428,9 +322,9 @@
                 <form th:action="@{/find}" method="get" class="d-flex">
                     <input type="hidden" name="lang" th:value="${lang}">
                     <input type="text" name="city" class="form-control me-2"
-                           th:placeholder="#{search.placeholder}" required>
+                           placeholder="Enter city name" required>
                     <button type="submit" class="btn btn-primary px-5">
-                        <i class="bi bi-search text-white"></i>
+                        <i class="bi bi-search"></i>
                     </button>
                 </form>
             </div>
@@ -441,8 +335,8 @@
     <div th:if="${locations != null and !locations.empty}" class="row justify-content-center mb-4">
         <div class="col-md-8">
             <div class="glass-card p-3">
-                <h5 class="mb-1" th:text="#{search.results}">Search Results</h5>
-                <small class="mb-1 text-muted" th:text="#{search.click_to_add}">(click on a card to add)</small>
+                <h5 class="mb-1">Search Results</h5>
+                <small class="mb-1 text-muted">(click on a card to add)</small>
                 <div class="search-results">
                     <div th:each="location : ${locations}" class="search-result-card glass-card">
                         <form th:action="@{/add-location}" method="post" class="h-100">
@@ -475,7 +369,7 @@
 
     <!-- Weather Cards -->
     <div th:if="${isAuthenticated and weatherData != null and !weatherData.empty}">
-        <h3 class="text-center mb-4" th:text="#{weather.locations}">Your Weather Locations</h3>
+        <h3 class="text-center text-black mb-4">Your Weather Locations</h3>
 
         <div class="row">
             <div th:each="weather : ${weatherData}" class="col-md-6 col-lg-4 mb-4">
@@ -498,8 +392,7 @@
 
                         <!-- Weather Icon and Temperature -->
                         <div class="d-flex align-items-center mb-3">
-<!--                            <img th:src="@{'/weather_icon/' + ${weather.icon} + '@2x.png'}"-->
-                            <img th:src="@{'https://openweathermap.org/img/wn/' + ${weather.icon} + '@2x.png'}"
+                            <img th:src="@{'/weather_icon/' + ${weather.icon} + '@2x.png'}"
                                  alt="Weather icon" class="weather-icon me-3">
                             <div class="temperature-display" th:text="${weather.temperature} + '°'"></div>
                         </div>
@@ -511,19 +404,19 @@
                         <!-- Weather Details -->
                         <div class="row mt-3">
                             <div class="col-6">
-                                <p><i class="bi bi-thermometer-half"></i> <span th:text="#{weather.feels_like}">Feels like</span>: <span
+                                <p><i class="bi bi-thermometer-half"></i> Feels like: <span
                                         th:text="${weather.feelsLike} + '°'"></span></p>
-                                <p><i class="bi bi-thermometer-low"></i> <span th:text="#{weather.min}">Min</span>: <span
+                                <p><i class="bi bi-thermometer-low"></i> Min: <span
                                         th:text="${weather.minTemperature} + '°'"></span></p>
-                                <p><i class="bi bi-thermometer-high"></i> <span th:text="#{weather.max}">Max</span>: <span
+                                <p><i class="bi bi-thermometer-high"></i> Max: <span
                                         th:text="${weather.maxTemperature} + '°'"></span></p>
                             </div>
                             <div class="col-6">
-                                <p><i class="bi bi-droplet"></i> <span th:text="#{weather.humidity}">Humidity</span>: <span
+                                <p><i class="bi bi-droplet"></i> Humidity: <span
                                         th:text="${weather.humidity} + '%'"></span></p>
-                                <p><i class="bi bi-speedometer2"></i> <span th:text="#{weather.pressure}">Pressure</span>: <span
+                                <p><i class="bi bi-speedometer2"></i> Pressure: <span
                                         th:text="${weather.pressure} + ' hPa'"></span></p>
-                                <p><i class="bi bi-wind"></i> <span th:text="#{weather.wind}">Wind</span>: <span
+                                <p><i class="bi bi-wind"></i> Wind: <span
                                         th:text="${weather.speed} + ' ' + ${lang == 'ru' ? 'm/s' : 'mph'}"></span></p>
                             </div>
                         </div>
@@ -532,12 +425,12 @@
                         <div class="sun-times d-flex justify-content-around mt-3">
                             <div class="text-center">
                                 <i class="bi bi-sunrise"></i>
-                                <p class="mb-0" th:text="#{weather.sunrise}">Sunrise</p>
+                                <p class="mb-0">Sunrise</p>
                                 <p th:text="${#temporals.format(weather.sunrise, 'HH:mm')}"></p>
                             </div>
                             <div class="text-center">
                                 <i class="bi bi-sunset"></i>
-                                <p class="mb-0" th:text="#{weather.sunset}">Sunset</p>
+                                <p class="mb-0">Sunset</p>
                                 <p th:text="${#temporals.format(weather.sunset, 'HH:mm')}"></p>
                             </div>
                         </div>
@@ -589,8 +482,8 @@
         <div class="col-md-6 text-center">
             <div class="glass-card p-5">
                 <i class="bi bi-geo-alt-fill" style="font-size: 3rem;"></i>
-                <h3 class="mt-3" th:text="#{empty_state.title}">No Locations Added</h3>
-                <p class="text-muted" th:text="#{empty_state.message}">Search for a city above to add it to your weather dashboard.</p>
+                <h3 class="mt-3">No Locations Added</h3>
+                <p class="text-muted">Search for a city above to add it to your weather dashboard.</p>
             </div>
         </div>
     </div>
@@ -599,12 +492,12 @@
     <div th:unless="${isAuthenticated}" class="row justify-content-center">
         <div class="col-md-8 text-center">
             <div class="glass-card p-5">
-                <h1 th:text="#{welcome.title}">Welcome to Weather Viewer</h1>
-                <p class="lead" th:text="#{welcome.lead}">Track weather conditions for your favorite locations around the world.</p>
-                <p th:text="#{welcome.message}">Sign up or sign in to start using our service.</p>
+                <h1>Welcome to Weather Viewer</h1>
+                <p class="lead">Track weather conditions for your favorite locations around the world.</p>
+                <p>Sign up or sign in to start using our service.</p>
                 <div class="mt-4">
-                    <a th:href="@{/sign-in}" class="btn btn-signin" th:text="#{navbar.signin}">Sign In</a>
-                    <a th:href="@{/sign-up}" class="btn btn-signup me-2" th:text="#{navbar.signup}">Sign Up</a>
+                    <a th:href="@{/sign-up}" class="btn btn-primary me-2">Sign Up</a>
+                    <a th:href="@{/sign-in}" class="btn btn-outline-primary">Sign In</a>
                 </div>
             </div>
         </div>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            /* Основные цвета пшеничного поля */
+            --wheat-light: #f5f0e6;
+            --wheat-medium: #e2d3ac;
+            --wheat-dark: #b8a992;
+
+            /* Акцентные теплые цвета */
+            --accent-color: #e07e4a;
+            --accent-hover: #c86a3d;
+            --gold-light: #ffd59a;
+
+            /* Переменные для компонентов */
+            --primary-gradient: linear-gradient(135deg, var(--wheat-medium) 10%, var(--gold-light) 100%);
+            --card-bg: rgba(245, 240, 230, 0.25);
+            --card-shadow: 0 8px 32px rgba(184, 169, 146, 0.15);
+            --text-main: #5d4a2a;
+        }
+
+        body {
+            background: url('https://images.unsplash.com/photo-1469122312224-c5846569feb1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .error-icon {
+            font-size: 5rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(224, 126, 74, 0.3);
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(224, 126, 74, 0.4);
+            color: white;
+        }
+
+        .btn-outline-custom {
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            transition: all 0.3s ease;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: 500;
+            background: transparent;
+        }
+
+        .btn-outline-custom:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        h1, h2 {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .lead {
+            color: var(--text-main);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="glass-card p-5 text-center" style="max-width: 600px;">
+        <i class="bi bi-exclamation-triangle error-icon"></i>
+        <h1 class="display-1 fw-bold">404</h1>
+        <h2 class="mb-4">Page Not Found</h2>
+        <p class="lead mb-4">
+            The page you're looking for doesn't exist or has been moved.
+            Let's get you back to familiar territory.
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <button onclick="history.back()" class="btn btn-outline-custom">
+                <i class="bi bi-arrow-left me-2"></i>Go Back
+            </button>
+            <a href="/index" class="btn btn-primary-custom">
+                <i class="bi bi-house me-2"></i>Go Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

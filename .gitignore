@@ -42,3 +42,4 @@ application.properties
 notes.md
 aggregated_files.txt
 tasks.md
+*.DS_Store

@@ -16,16 +16,17 @@ import reactor.util.retry.Retry;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 
 @Service
-public class WeatherService {
+public class WeatherServiceByApi implements WeatherService {
     private final WebClient webClient;
     @Value("${weather.api.key}")
     private String apiKey;
 
-    public WeatherService(WebClient.Builder webClientBuilder) {
+    public WeatherServiceByApi(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://api.openweathermap.org").build();
     }
 
@@ -87,7 +88,7 @@ public class WeatherService {
 
     public WeatherDto getWeather(Location location, String lang) {
         WeatherData weatherData = getWeatherData(location.getLatitude(), location.getLongitude(), lang).block();
-        return mapToDto(weatherData);
+        return mapToDto(location, weatherData);
     }
 
     private String getUnitsByLang(String lang) {
@@ -98,12 +99,23 @@ public class WeatherService {
         };
     }
 
-    private WeatherDto mapToDto(WeatherData weatherData) {
-        final long SECONDS_PER_HOUR = 3600;
+    private WeatherDto mapToDto(Location location, WeatherData weatherData) {
+        LocalTime currentTime = LocalTime.now();
+        String currentTimeFormatted = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime sunrise = getSecondsSinceMidnight(weatherData.getSys().getSunrise(), weatherData.getTimezone());
+        LocalTime sunset = getSecondsSinceMidnight(weatherData.getSys().getSunset(), weatherData.getTimezone());
+
+        double sunPositionPercentage = calculateTimePosition(currentTime); // Положение солнца в процентах (0-100)
+        double sunrisePositionPercentage = calculateTimePosition(sunrise); // положение рассвета в %
+        double sunsetPositionPercentage = calculateTimePosition(sunset);   // положение заката в %
+
+        boolean isDay = sunrisePositionPercentage <= sunPositionPercentage && sunPositionPercentage <= sunsetPositionPercentage;
+
         return new WeatherDto(
+                location.getLatitude(),
+                location.getLongitude(),
                 weatherData.getName(),
                 weatherData.getSys().getCountry(),
-                weatherData.getTimezone() / SECONDS_PER_HOUR,
                 weatherData.getMain().getTemp(),
                 weatherData.getMain().getFeelsLike(),
                 weatherData.getMain().getMinTemp(),
@@ -114,13 +126,20 @@ public class WeatherService {
                 weatherData.getWeather()[0].getDescription(),
                 weatherData.getWeather()[0].getIcon(),
                 weatherData.getWind().getSpeed(),
-                weatherData.getWind().getDeg(),
                 weatherData.getClouds().getAll(),
-                weatherData.getRain() != null ? weatherData.getRain().getMillimeters() : BigDecimal.ZERO,
-                weatherData.getSnow() != null ? weatherData.getSnow().getMillimeters() : BigDecimal.ZERO,
-                getSecondsSinceMidnight(weatherData.getSys().getSunrise(), weatherData.getTimezone()),
-                getSecondsSinceMidnight(weatherData.getSys().getSunset(), weatherData.getTimezone())
+                currentTime,
+                sunrise,
+                sunset,
+                sunrisePositionPercentage,
+                currentTimeFormatted,
+                sunrisePositionPercentage,
+                sunsetPositionPercentage,
+                isDay
         );
+    }
+
+    private double calculateTimePosition(LocalTime time) {
+        return (time.getHour() * 60 + time.getMinute()) / (24.0 * 60) * 100;
     }
 
     public List<LocationDto> findLocations(String city) {

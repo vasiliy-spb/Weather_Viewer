@@ -25,14 +25,12 @@ public record WeatherDto(
 
         // Wind
         BigDecimal speed, // скорость ветра, если язык ru, то в метрах в секунду, а если en, то в милях в час
-        Integer degree, // направление ветра, degrees (meteorological)
 
         Integer cloudiness, // Cloudiness, %
 
         LocalTime currentTime, // текущее время в локации
         LocalTime sunrise, // Sunrise time, unix, UTC
         LocalTime sunset, // Sunset time, unix, UTC
-        String daylightDuration, // продолжительность дня в формате "ЧЧ:ММ"
         Double sunPositionPercentage, // Положение солнца в процентах (0-100)
         String currentTimeFormatted, // Текущее время в формате HH:mm
         Double sunrisePositionPercentage, // положение рассвета в %
